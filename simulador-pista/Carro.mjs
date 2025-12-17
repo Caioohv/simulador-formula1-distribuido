@@ -72,7 +72,7 @@ export default class Carro {
       timestamp: new Date().toISOString()
     }
 
-    const topico = `formula1/sensor`;
+    const topico = `formula1/sensor-${ponto.pos}`;
 
     this.publisher.publish(topico, JSON.stringify(evento));
 

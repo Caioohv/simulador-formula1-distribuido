@@ -5,7 +5,7 @@ import time
 
 def on_connect(client, userdata, flags, rc):
     ponto_id = userdata['ponto_id']
-    topico = f"formula1/sensor"
+    topico = f"formula1/sensor-{ponto_id}"
     print(f"[SCCP-{ponto_id}] Conectado ao broker MQTT (código: {rc})")
     print(f"[SCCP-{ponto_id}] Inscrito no tópico: {topico}")
     client.subscribe(topico)
