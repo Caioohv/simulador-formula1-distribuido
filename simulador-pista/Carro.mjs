@@ -1,3 +1,5 @@
+import Publisher from "./Publisher.mjs";
+
 export default class Carro {
   constructor(id, nome, equipe, last) {
     this.id = id;
@@ -14,6 +16,7 @@ export default class Carro {
     
     let velocidadekmh = 210 + this.obterVariancia(); //210-220
     this.velocidadeMedia = velocidadekmh / 3.6; // km/h para m/s
+    this.publisher = new Publisher();
   }
 
 
@@ -56,7 +59,22 @@ export default class Carro {
   }
 
   publicaEvento(ponto, tempo, velocidade) {
-    console.log(`${ponto.pos}: ${ponto.name} - Carro ${this.nome} passou em ${tempo.toFixed(2)} segundos com velocidade de ${velocidade.toFixed(2)} m/s. Pressão dos pneus: ${JSON.stringify(this.obtemEstadoPneus())}`);
+    const evento = {
+      carroId: this.id,
+      nome: this.nome,
+      equipe: this.equipe,
+      pontoId: ponto.id,
+      pontoNome: ponto.nome,
+      distancia: ponto.distancia,
+      tempo: tempo,
+      velocidade: velocidade,
+      pressaoPneus: this.obtemEstadoPneus(),
+      timestamp: new Date().toISOString()
+    }
+
+    const topico = `formula1/sensor-${ponto.id}`;
+
+    this.publisher.publish(topico, JSON.stringify(evento));
 
   }
 

@@ -1,9 +1,8 @@
 import mqtt from 'mqtt';
 
 export default class Publisher {
-  constructor(brokerUrl, topic) {
+  constructor(brokerUrl = 'mqtt://localhost:1883') {
     this.client = mqtt.connect(brokerUrl);
-    this.topic = topic;
 
     this.client.on('connect', () => {
       console.log(`Connected to MQTT broker at ${brokerUrl}`);
@@ -14,8 +13,8 @@ export default class Publisher {
     });
   }
 
-  publish(message) {
-    this.client.publish(this.topic, message, (error) => {
+  publish(topic, message) {
+    this.client.publish(topic, message, (error) => {
       if (error) {
         console.error(`Publish error: ${error}`);
       } else {

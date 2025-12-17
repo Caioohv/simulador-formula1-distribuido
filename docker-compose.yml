@@ -1,0 +1,131 @@
+version: "3"
+services:
+  mqtt:
+    image: toke/mosquitto
+    network_mode: bridge
+    container_name: mqtt
+    expose:
+      - 1883
+    ports:
+      - 1883:1883
+    restart: unless-stopped
+
+  sccp-1:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-1
+    command: ["1"]
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+
+  sccp-2:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-2
+    command: ["2"]
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+
+  sccp-3:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-3
+    command: ["3"]
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+
+  sccp-4:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-4
+    command: ["4"]
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+
+  sccp-5:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-5
+    command: ["5"]
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+
+  sccp-6:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-6
+    command: ["6"]
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+
+  sccp-7:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-7
+    command: ["7"]
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+
+  sccp-8:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-8
+    command: ["8"]
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+
+  sccp-9:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-9
+    command: ["9"]
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+
+  sccp-10:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-10
+    command: ["10"]
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+
+  sccp-11:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-11
+    command: ["11"]
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+
+  sccp-12:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-12
+    command: ["12"]
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+
+  sccp-13:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-13
+    command: ["13"]
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+
+  sccp-14:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-14
+    command: ["14"]
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+
+  sccp-15:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-15
+    command: ["15"]
+    depends_on:
+      - mqtt
+    restart: unless-stopped
