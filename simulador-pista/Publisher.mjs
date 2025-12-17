@@ -18,7 +18,7 @@ export default class Publisher {
       if (error) {
         console.error(`Publish error: ${error}`);
       } else {
-        console.log(`Message published to ${this.topic}: ${message}`);
+        console.log(`Message published to ${topic}: ${message}`);
       }
     });
   }

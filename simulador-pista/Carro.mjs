@@ -63,8 +63,8 @@ export default class Carro {
       carroId: this.id,
       nome: this.nome,
       equipe: this.equipe,
-      pontoId: ponto.id,
-      pontoNome: ponto.nome,
+      pontoId: ponto.pos,
+      pontoNome: ponto.name,
       distancia: ponto.distancia,
       tempo: tempo,
       velocidade: velocidade,
@@ -72,7 +72,7 @@ export default class Carro {
       timestamp: new Date().toISOString()
     }
 
-    const topico = `formula1/sensor-${ponto.id}`;
+    const topico = `formula1/sensor`;
 
     this.publisher.publish(topico, JSON.stringify(evento));
 
