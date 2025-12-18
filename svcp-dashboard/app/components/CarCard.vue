@@ -70,12 +70,12 @@ onMounted(() => {
 
     <div class="tires-grid">
       <div class="tire-row">
-        <TireStatus :pressao="carro.pressaoPneus.frontalEsquerdo || 0" posicao="FE" />
-        <TireStatus :pressao="carro.pressaoPneus.frontalDireito || 0" posicao="FD" />
+        <TireStatus :pressao="carro.pressaoPneus.pneu1 || 0" posicao="FE" />
+        <TireStatus :pressao="carro.pressaoPneus.pneu2 || 0" posicao="FD" />
       </div>
       <div class="tire-row">
-        <TireStatus :pressao="carro.pressaoPneus.traseiroEsquerdo || 0" posicao="TE" />
-        <TireStatus :pressao="carro.pressaoPneus.traseiroDireito || 0" posicao="TD" />
+        <TireStatus :pressao="carro.pressaoPneus.pneu3 || 0" posicao="TE" />
+        <TireStatus :pressao="carro.pressaoPneus.pneu4 || 0" posicao="TD" />
       </div>
     </div>
   </div>

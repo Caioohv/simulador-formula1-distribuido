@@ -31,8 +31,10 @@ export const useCarrosStore = defineStore('carros', {
       this.loading = true
       try {
         const data = await $fetch('/api/eventos')
-        this.eventos = data
-        this.processarEventos(data)
+        // Converte objeto em array se necessário
+        const eventos = Array.isArray(data) ? data : Object.values(data)
+        this.eventos = eventos
+        this.processarEventos(eventos)
         this.lastUpdate = new Date()
       } catch (error) {
         console.error('Erro ao buscar eventos:', error)
@@ -51,10 +53,10 @@ export const useCarrosStore = defineStore('carros', {
         if (!existente || new Date(evento.timestamp) > new Date(existente.timestamp)) {
           const pressoes = evento.pressaoPneus || {}
           const valores = [
-            pressoes.frontalEsquerdo || 0,
-            pressoes.frontalDireito || 0,
-            pressoes.traseiroEsquerdo || 0,
-            pressoes.traseiroDireito || 0
+            pressoes.pneu1 || 0,
+            pressoes.pneu2 || 0,
+            pressoes.pneu3 || 0,
+            pressoes.pneu4 || 0
           ]
           
           const mediaPressao = valores.reduce((a, b) => a + b, 0) / 4
