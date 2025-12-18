@@ -12,7 +12,7 @@ export const useCarrosStore = defineStore('carros', {
   getters: {
     carrosOrdenados: (state) => {
       const carros = Array.from(state.carrosData.values())
-      return carros.sort((a, b) => a.mediaPressao - b.mediaPressao)
+      return carros.sort((a, b) => a.menorPressao - b.menorPressao)
     },
 
     carrosPorEquipe: (state) => {
@@ -60,6 +60,7 @@ export const useCarrosStore = defineStore('carros', {
           ]
           
           const mediaPressao = valores.reduce((a, b) => a + b, 0) / 4
+          const menorPressao = Math.min(...valores)
 
           carrosMap.set(carroId, {
             carroId,
@@ -71,6 +72,7 @@ export const useCarrosStore = defineStore('carros', {
             distancia: evento.distancia,
             pressaoPneus: pressoes,
             mediaPressao,
+            menorPressao,
             timestamp: evento.timestamp,
             _source: evento._source
           })

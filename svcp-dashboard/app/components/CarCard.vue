@@ -24,6 +24,16 @@ const calcularTempoDecorrido = () => {
   return `${Math.floor(diff / 3600)}h atrás`
 }
 
+const getTireStatus = (pressao) => {
+  if (pressao >= 40) return 'ok'
+  if (pressao >= 30) return 'warning'
+  if (pressao >= 20) return 'danger'
+  if (pressao >= 10) return 'critical'
+  return 'emergency'
+}
+
+const menorPressaoStatus = computed(() => getTireStatus(props.carro.menorPressao))
+
 onMounted(() => {
   tempoDesdeAtualizacao.value = calcularTempoDecorrido()
 
@@ -41,15 +51,23 @@ onMounted(() => {
         <span class="car-team">{{ carro.equipe }}</span>
         <span class="car-id">#{{ carro.carroId }}</span>
       </div>
-      <div class="car-avg">
-        <span class="avg-label">Pressão Média</span>
-        <span class="avg-value" :class="{
-          'avg-ok': carro.mediaPressao >= 40,
-          'avg-warning': carro.mediaPressao >= 30 && carro.mediaPressao < 40,
-          'avg-danger': carro.mediaPressao < 30
-        }">
-          {{ carro.mediaPressao.toFixed(1) }} PSI
-        </span>
+      <div class="car-stats">
+        <div class="car-avg">
+          <span class="avg-label">Pressão Média</span>
+          <span class="avg-value" :class="{
+            'avg-ok': carro.mediaPressao >= 40,
+            'avg-warning': carro.mediaPressao >= 30 && carro.mediaPressao < 40,
+            'avg-danger': carro.mediaPressao < 30
+          }">
+            {{ carro.mediaPressao.toFixed(1) }} PSI
+          </span>
+        </div>
+        <div class="car-min">
+          <span class="min-label">Menor Pressão</span>
+          <span class="min-value" :class="`tire-${menorPressaoStatus}`">
+            {{ carro.menorPressao.toFixed(1) }} PSI
+          </span>
+        </div>
       </div>
     </div>
 
@@ -127,20 +145,29 @@ onMounted(() => {
   color: #666;
 }
 
-.car-avg {
+.car-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.car-avg,
+.car-min {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 0.25rem;
 }
 
-.avg-label {
+.avg-label,
+.min-label {
   font-size: 0.75rem;
   color: #999;
   text-transform: uppercase;
 }
 
-.avg-value {
+.avg-value,
+.min-value {
   font-size: 1.5rem;
   font-weight: bold;
 }
@@ -155,6 +182,32 @@ onMounted(() => {
 
 .avg-danger {
   color: #ff0000;
+}
+
+.tire-ok {
+  color: #00ff00;
+}
+
+.tire-warning {
+  color: #ffff00;
+}
+
+.tire-danger {
+  color: #ff6600;
+}
+
+.tire-critical {
+  color: #ff0000;
+}
+
+.tire-emergency {
+  color: #ff0000;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0.3; }
 }
 
 .car-details {
