@@ -31,7 +31,6 @@ export const useCarrosStore = defineStore('carros', {
       this.loading = true
       try {
         const data = await $fetch('/api/eventos')
-        // Converte objeto em array se necessário
         const eventos = Array.isArray(data) ? data : Object.values(data)
         this.eventos = eventos
         this.processarEventos(eventos)

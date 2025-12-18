@@ -10,7 +10,6 @@ RPC_HOST_FALLBACK = 'sacp-8001'
 _rpyc_conn = None
 
 def get_rpc_port(ponto_id):
-    """Retorna a porta RPC baseado no ID do ponto"""
     ponto_num = int(ponto_id)
     if 1 <= ponto_num <= 5:
         return 8001
