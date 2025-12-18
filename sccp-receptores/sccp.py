@@ -4,6 +4,10 @@ import sys
 import time
 import rpyc
 
+RPC_HOST = 'localhost'
+RPC_PORT = 8000
+_rpyc_conn = None
+
 def on_connect(client, userdata, flags, rc):
     ponto_id = userdata['ponto_id']
     topico = f"formula1/sensor-{ponto_id}"
@@ -15,7 +19,6 @@ def on_message(client, userdata, msg):
     ponto_id = userdata['ponto_id']
     try:
         evento = json.loads(msg.payload.decode())
-        # Velocidade vem em m/s — converte para km/h
         vel_mps = evento.get('velocidade', 0)
         vel_kmh = vel_mps * 3.6
 
@@ -28,17 +31,11 @@ def on_message(client, userdata, msg):
         print(f"  Timestamp: {evento['timestamp']}")
         print("-" * 60)
 
-        # Envia o evento para o servidor RPC (implementação mínima)
         send_event_rpc(evento)
     except Exception as e:
         print(f"[SCCP-{ponto_id}] Erro ao processar mensagem: {e}")
 
-RPC_HOST = 'localhost'
-RPC_PORT = 8000
-_rpyc_conn = None
-
 def _get_rpyc_root():
-    """Retorna root do rpyc, conectando na primeira chamada. Retorna None se não conseguiu conectar."""
     global _rpyc_conn
     if _rpyc_conn is None:
         try:
@@ -50,9 +47,6 @@ def _get_rpyc_root():
     return _rpyc_conn.root if _rpyc_conn else None
 
 def send_event_rpc(evento):
-    """Envia o evento para o servidor RPC via rpyc (método remoto save_event).
-    Implementação mínima: tenta conectar uma vez e chama o método remoto; apenas log de erro em falha.
-    """
     try:
         root = _get_rpyc_root()
         if root is None:
