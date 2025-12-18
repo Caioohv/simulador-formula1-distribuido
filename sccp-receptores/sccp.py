@@ -5,8 +5,19 @@ import time
 import rpyc
 
 RPC_HOST = 'localhost'
-RPC_PORT = 8000
 _rpyc_conn = None
+
+def get_rpc_port(ponto_id):
+    """Retorna a porta RPC baseado no ID do ponto"""
+    ponto_num = int(ponto_id)
+    if 1 <= ponto_num <= 5:
+        return 8001
+    elif 6 <= ponto_num <= 10:
+        return 8002
+    elif 11 <= ponto_num <= 15:
+        return 8003
+    else:
+        return None
 
 def on_connect(client, userdata, flags, rc):
     ponto_id = userdata['ponto_id']
@@ -31,39 +42,45 @@ def on_message(client, userdata, msg):
         print(f"  Timestamp: {evento['timestamp']}")
         print("-" * 60)
 
-        send_event_rpc(evento)
+        send_event_rpc(ponto_id, evento)
     except Exception as e:
         print(f"[SCCP-{ponto_id}] Erro ao processar mensagem: {e}")
 
-def _get_rpyc_root():
+def _get_rpyc_root(ponto_id):
     global _rpyc_conn
+    rpc_port = get_rpc_port(ponto_id)
+    
+    if rpc_port is None:
+        print(f"[SCCP-{ponto_id}] ID do ponto inválido: {ponto_id}")
+        return None
+    
     if _rpyc_conn is None:
         try:
-            _rpyc_conn = rpyc.connect(RPC_HOST, RPC_PORT)
-            print(f"[SCCP] Conectado ao servidor RPYC {RPC_HOST}:{RPC_PORT}")
+            _rpyc_conn = rpyc.connect(RPC_HOST, rpc_port)
+            print(f"[SCCP-{ponto_id}] Conectado ao servidor RPYC {RPC_HOST}:{rpc_port}")
         except Exception as e:
-            print(f"[SCCP] Erro ao conectar ao RPYC: {e}")
+            print(f"[SCCP-{ponto_id}] Erro ao conectar ao RPYC {RPC_HOST}:{rpc_port}: {e}")
             _rpyc_conn = None
     return _rpyc_conn.root if _rpyc_conn else None
 
-def send_event_rpc(evento):
+def send_event_rpc(ponto_id, evento):
     try:
-        root = _get_rpyc_root()
+        root = _get_rpyc_root(ponto_id)
         if root is None:
-            print(f"[SCCP-{evento.get('pontoId', '??')}] Conexão RPYC indisponível; evento não enviado")
+            print(f"[SCCP-{ponto_id}] Conexão RPYC indisponível; evento não enviado")
             return
         root.save_event(evento)
-        print(f"[SCCP-{evento.get('pontoId', '??')}] Evento enviado ao RPC via rpyc")
+        print(f"[SCCP-{ponto_id}] Evento enviado ao RPC via rpyc")
     except Exception as e:
-        print(f"[SCCP-{evento.get('pontoId', '??')}] Erro ao enviar evento via rpyc: {e}")
+        print(f"[SCCP-{ponto_id}] Erro ao enviar evento via rpyc: {e}")
 
 def main():
     if len(sys.argv) < 2:
-        print("Uso: python sccp.py <ponto_id>")
+        print("Uso: python3 sccp.py <ponto_id>")
         sys.exit(1)
     
     ponto_id = sys.argv[1]
-    broker = "localhost"
+    broker = "localhost"  
     porta = 1883
     
     client = mqtt.Client(userdata={'ponto_id': ponto_id})

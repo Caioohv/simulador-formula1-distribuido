@@ -2,10 +2,368 @@ version: "3"
 services:
   mqtt:
     image: toke/mosquitto
-    network_mode: bridge
     container_name: mqtt
     expose:
       - 1883
     ports:
       - 1883:1883
     restart: unless-stopped
+
+  mongodb-1:
+    image: mongo:latest
+    container_name: mongodb-1
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data_1:/data/db
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok' mongodb://admin:admin123@localhost:27017/ | grep 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb-2:
+    image: mongo:latest
+    container_name: mongodb-2
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    ports:
+      - 27018:27017
+    volumes:
+      - mongodb_data_2:/data/db
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok' mongodb://admin:admin123@localhost:27017/ | grep 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb-3:
+    image: mongo:latest
+    container_name: mongodb-3
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    ports:
+      - 27019:27017
+    volumes:
+      - mongodb_data_3:/data/db
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok' mongodb://admin:admin123@localhost:27017/ | grep 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  sacp-8001:
+    build: ./sacp-armazenadores
+    container_name: sacp-servidor-8001
+    command: ["8001"]
+    environment:
+      MONGODB_HOST: mongodb-1
+      MONGODB_PORT: 27017
+      MONGODB_USER: admin
+      MONGODB_PASSWORD: admin123
+      MONGODB_DB: formula1_db
+    ports:
+      - 8001:8001
+    depends_on:
+      mqtt:
+        condition: service_started
+      mongodb-1:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'python -c ''import socket; s=socket.create_connection(("localhost",8001),2); s.close()''',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  sacp-8002:
+    build: ./sacp-armazenadores
+    container_name: sacp-servidor-8002
+    command: ["8002"]
+    environment:
+      MONGODB_HOST: mongodb-2
+      MONGODB_PORT: 27017
+      MONGODB_USER: admin
+      MONGODB_PASSWORD: admin123
+      MONGODB_DB: formula1_db
+    ports:
+      - 8002:8002
+    depends_on:
+      mqtt:
+        condition: service_started
+      mongodb-2:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'python -c ''import socket; s=socket.create_connection(("localhost",8002),2); s.close()''',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  sacp-8003:
+    build: ./sacp-armazenadores
+    container_name: sacp-servidor-8003
+    command: ["8003"]
+    environment:
+      MONGODB_HOST: mongodb-3
+      MONGODB_PORT: 27017
+      MONGODB_USER: admin
+      MONGODB_PASSWORD: admin123
+      MONGODB_DB: formula1_db
+    ports:
+      - 8003:8003
+    depends_on:
+      mqtt:
+        condition: service_started
+      mongodb-3:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'python -c ''import socket; s=socket.create_connection(("localhost",8003),2); s.close()''',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  sccp-1:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-1
+    command: ["1"]
+    depends_on:
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  sccp-2:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-2
+    command: ["2"]
+    depends_on:
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  sccp-3:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-3
+    command: ["3"]
+    depends_on:
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  sccp-4:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-4
+    command: ["4"]
+    depends_on:
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  sccp-5:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-5
+    command: ["5"]
+    depends_on:
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  sccp-6:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-6
+    command: ["6"]
+    depends_on:
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  sccp-7:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-7
+    command: ["7"]
+    depends_on:
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  sccp-8:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-8
+    command: ["8"]
+    depends_on:
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  sccp-9:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-9
+    command: ["9"]
+    depends_on:
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  sccp-10:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-10
+    command: ["10"]
+    depends_on:
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  sccp-11:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-11
+    command: ["11"]
+    depends_on:
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  sccp-12:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-12
+    command: ["12"]
+    depends_on:
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  sccp-13:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-13
+    command: ["13"]
+    depends_on:
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  sccp-14:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-14
+    command: ["14"]
+    depends_on:
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  sccp-15:
+    build: ./sccp-receptores
+    container_name: sccp-receptor-15
+    command: ["15"]
+    depends_on:
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: ./svcp-dashboard
+      dockerfile: Dockerfile
+    container_name: svcp-dashboard
+    ports:
+      - 3000:3000
+    depends_on:
+      mongodb-1:
+        condition: service_healthy
+      mongodb-2:
+        condition: service_healthy
+      mongodb-3:
+        condition: service_healthy
+      sacp-8001:
+        condition: service_started
+      sacp-8002:
+        condition: service_started
+      sacp-8003:
+        condition: service_started
+    restart: unless-stopped
+
+  simulador-pista:
+    build:
+      context: ./simulador-pista
+      dockerfile: Dockerfile
+    container_name: simulador-pista
+    environment:
+      - MQTT_URL=localhost:1883
+    working_dir: /home/viier/projects/ifmg/sd/formula1/simulador-pista
+    command: ["node", "index.mjs"]
+    depends_on:
+      mqtt:
+        condition: service_started
+      sccp-1:
+        condition: service_started
+      sccp-2:
+        condition: service_started
+      sccp-3:
+        condition: service_started
+      sccp-4:
+        condition: service_started
+      sccp-5:
+        condition: service_started
+      sccp-6:
+        condition: service_started
+      sccp-7:
+        condition: service_started
+      sccp-8:
+        condition: service_started
+      sccp-9:
+        condition: service_started
+      sccp-10:
+        condition: service_started
+      sccp-11:
+        condition: service_started
+      sccp-12:
+        condition: service_started
+      sccp-13:
+        condition: service_started
+      sccp-14:
+        condition: service_started
+      sccp-15:
+        condition: service_started
+      sacp-8001:
+        condition: service_healthy
+      sacp-8002:
+        condition: service_healthy
+      sacp-8003:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  mongodb_data_1:
+  mongodb_data_2:
+  mongodb_data_3:

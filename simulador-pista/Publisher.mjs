@@ -1,7 +1,7 @@
 import mqtt from 'mqtt';
 
 export default class Publisher {
-  constructor(brokerUrl = 'mqtt://localhost:1883') {
+  constructor(brokerUrl = 'mqtt://mqtt:1883') {
     this.client = mqtt.connect(brokerUrl);
 
     this.client.on('connect', () => {
