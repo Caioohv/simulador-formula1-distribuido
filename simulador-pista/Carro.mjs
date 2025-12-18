@@ -26,8 +26,8 @@ export default class Carro {
       let reduzir = Math.random() * 100 < chance;
       if (reduzir) {
         this.pressaoPneus[pneu] -= Math.floor(Math.random() * 3) + 1; // reduz entre 1 e 3
-        if (this.pressaoPneus[pneu] < 20) {
-          this.pressaoPneus[pneu] = 20; // pressão mínima
+        if (this.pressaoPneus[pneu] < 5) {
+          this.pressaoPneus[pneu] = 5; // pressão mínima
         }
       }
     }
