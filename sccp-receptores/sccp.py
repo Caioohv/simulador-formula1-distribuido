@@ -1,10 +1,12 @@
+import os
 import paho.mqtt.client as mqtt
 import json
 import sys
 import time
 import rpyc
 
-RPC_HOST = 'localhost'
+RPC_HOSTS = {8001: 'sacp-8001', 8002: 'sacp-8002', 8003: 'sacp-8003'}
+RPC_HOST_FALLBACK = 'sacp-8001'
 _rpyc_conn = None
 
 def get_rpc_port(ponto_id):
@@ -54,12 +56,14 @@ def _get_rpyc_root(ponto_id):
         print(f"[SCCP-{ponto_id}] ID do ponto inválido: {ponto_id}")
         return None
     
+    rpc_host = RPC_HOSTS.get(rpc_port, RPC_HOST_FALLBACK)
+    
     if _rpyc_conn is None:
         try:
-            _rpyc_conn = rpyc.connect(RPC_HOST, rpc_port)
-            print(f"[SCCP-{ponto_id}] Conectado ao servidor RPYC {RPC_HOST}:{rpc_port}")
+            _rpyc_conn = rpyc.connect(rpc_host, rpc_port)
+            print(f"[SCCP-{ponto_id}] Conectado ao servidor RPYC {rpc_host}:{rpc_port}")
         except Exception as e:
-            print(f"[SCCP-{ponto_id}] Erro ao conectar ao RPYC {RPC_HOST}:{rpc_port}: {e}")
+            print(f"[SCCP-{ponto_id}] Erro ao conectar ao RPYC {rpc_host}:{rpc_port}: {e}")
             _rpyc_conn = None
     return _rpyc_conn.root if _rpyc_conn else None
 
@@ -80,8 +84,8 @@ def main():
         sys.exit(1)
     
     ponto_id = sys.argv[1]
-    broker = "localhost"  
-    porta = 1883
+    broker = os.getenv("MQTT_HOST", "mqtt")
+    porta = int(os.getenv("MQTT_PORT", "1883"))
     
     client = mqtt.Client(userdata={'ponto_id': ponto_id})
     client.on_connect = on_connect
