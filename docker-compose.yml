@@ -17,8 +17,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin123
     ports:
       - 27017:27017
-    volumes:
-      - mongodb_data_1:/data/db
     restart: unless-stopped
     healthcheck:
       test:
@@ -38,8 +36,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin123
     ports:
       - 27018:27017
-    volumes:
-      - mongodb_data_2:/data/db
     restart: unless-stopped
     healthcheck:
       test:
@@ -59,8 +55,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin123
     ports:
       - 27019:27017
-    volumes:
-      - mongodb_data_3:/data/db
     restart: unless-stopped
     healthcheck:
       test:
@@ -362,8 +356,3 @@ services:
       sacp-8003:
         condition: service_healthy
     restart: unless-stopped
-
-volumes:
-  mongodb_data_1:
-  mongodb_data_2:
-  mongodb_data_3:
